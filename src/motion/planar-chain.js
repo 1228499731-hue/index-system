@@ -1,4 +1,6 @@
 import { clonePoint, rotatePoint, smoothstep } from "../geometry/vector.js";
+import { toScreen } from "../geometry/transform.js";
+import { sampleGreekCrossSquare } from "../cases/research/greek-cross-square.js";
 
 export function buildInitialGeometry(caseSpec, screenPoints) {
   return Object.fromEntries(
@@ -44,6 +46,23 @@ export function dudeneyTriangleSquareFrame(caseSpec, screenPoints, progress) {
 export function getPlanarFrame(caseSpec, screenPoints, progress) {
   if (caseSpec.motion.solver === "dudeney-triangle-square") {
     return dudeneyTriangleSquareFrame(caseSpec, screenPoints, progress);
+  }
+  if (caseSpec.motion.solver === "greek-cross-square-loyd") {
+    const frame = sampleGreekCrossSquare("loyd", progress);
+    return {
+      geometry: Object.fromEntries(
+        Object.entries(frame.geometry).map(([pieceId, points]) => [
+          pieceId,
+          points.map(point => toScreen(point, caseSpec.viewport))
+        ])
+      ),
+      hinges: Object.fromEntries(
+        Object.entries(frame.hinges).map(([hingeId, [point]]) => [
+          caseSpec.motion.hingeMap?.[hingeId] ?? hingeId,
+          toScreen(point, caseSpec.viewport)
+        ])
+      )
+    };
   }
   throw new Error(`未知的平面运动学求解器：${caseSpec.motion.solver}`);
 }

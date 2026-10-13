@@ -56,16 +56,35 @@ export class SvgRenderer {
       this.pieceElements.set(piece.id, polygon);
     });
 
-    shuffle(caseSpec.challenges.cuts.candidates).forEach((definition, index) => {
+    const cutDefinitions = shuffle(caseSpec.challenges.cuts.candidates);
+    cutDefinitions.forEach(definition => {
       const start = screenPoints[definition.start];
       const end = screenPoints[definition.end];
       const group = svgElement("g", { class: "candidate", "data-id": definition.id });
       const lineAttributes = { x1: start.x, y1: start.y, x2: end.x, y2: end.y };
       group.append(svgElement("line", { ...lineAttributes, class: "candidate-hit" }));
       group.append(svgElement("line", { ...lineAttributes, class: "candidate-line" }));
-      const midpoint = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
-      group.append(svgElement("circle", { cx: midpoint.x, cy: midpoint.y, r: 13, class: "line-number-circle" }));
-      const label = svgElement("text", { x: midpoint.x, y: midpoint.y, class: "line-number-text" });
+      group.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        handlers.onCutToggle(definition.id);
+      });
+      this.layers.cuts.append(group);
+      this.cutElements.set(definition.id, [group]);
+    });
+
+    // Number controls are appended after every wide line hit-area so their
+    // clickable circles stay on top even when several meaningful candidates cross.
+    cutDefinitions.forEach((definition, index) => {
+      const start = screenPoints[definition.start];
+      const end = screenPoints[definition.end];
+      const labelT = definition.labelT ?? 0.5;
+      const labelPoint = {
+        x: start.x + (end.x - start.x) * labelT,
+        y: start.y + (end.y - start.y) * labelT
+      };
+      const group = svgElement("g", { class: "candidate candidate-label", "data-id": definition.id });
+      group.append(svgElement("circle", { cx: labelPoint.x, cy: labelPoint.y, r: 13, class: "line-number-circle" }));
+      const label = svgElement("text", { x: labelPoint.x, y: labelPoint.y, class: "line-number-text" });
       label.textContent = String(index + 1);
       group.append(label);
       group.addEventListener("pointerdown", event => {
@@ -73,7 +92,7 @@ export class SvgRenderer {
         handlers.onCutToggle(definition.id);
       });
       this.layers.cuts.append(group);
-      this.cutElements.set(definition.id, group);
+      this.cutElements.get(definition.id).push(group);
     });
 
     caseSpec.geometry.labels.forEach(definition => {
@@ -131,17 +150,21 @@ export class SvgRenderer {
   }
 
   renderSelections(selectedCuts, selectedHinges) {
-    this.cutElements.forEach((element, id) => element.classList.toggle("selected", selectedCuts.has(id)));
+    this.cutElements.forEach((elements, id) => {
+      elements.forEach(element => element.classList.toggle("selected", selectedCuts.has(id)));
+    });
     this.hingeCandidateElements.forEach((element, id) => element.classList.toggle("selected", selectedHinges.has(id)));
   }
 
   showCorrectCuts(answerIds) {
     const answers = new Set(answerIds);
-    this.cutElements.forEach((element, id) => {
-      if (answers.has(id)) {
-        element.classList.add("correct");
-        element.querySelectorAll("circle,text").forEach(child => { child.style.opacity = "0"; });
-      } else element.style.opacity = "0";
+    this.cutElements.forEach((elements, id) => {
+      elements.forEach(element => {
+        if (answers.has(id)) {
+          element.classList.add("correct");
+          element.querySelectorAll("circle,text").forEach(child => { child.style.opacity = "0"; });
+        } else element.style.opacity = "0";
+      });
     });
   }
 
@@ -156,17 +179,17 @@ export class SvgRenderer {
   flashWrong(kind, ids) {
     const map = kind === "cuts" ? this.cutElements : this.hingeCandidateElements;
     ids.forEach(id => {
-      const element = map.get(id);
-      element?.classList.add("wrong");
-      window.setTimeout(() => element?.classList.remove("wrong"), 900);
+      const elements = kind === "cuts" ? map.get(id) : [map.get(id)];
+      elements?.forEach(element => element?.classList.add("wrong"));
+      window.setTimeout(() => elements?.forEach(element => element?.classList.remove("wrong")), 900);
     });
   }
 
   hint(kind, id) {
     const map = kind === "cuts" ? this.cutElements : this.hingeCandidateElements;
-    const element = map.get(id);
-    element?.classList.add("hinted");
-    return () => element?.classList.remove("hinted");
+    const elements = kind === "cuts" ? map.get(id) : [map.get(id)];
+    elements?.forEach(element => element?.classList.add("hinted"));
+    return () => elements?.forEach(element => element?.classList.remove("hinted"));
   }
 
   setLayerOpacity(layer, value) {

@@ -47,7 +47,7 @@ function resetIdleTimer() {
       resetIdleTimer();
       return;
     }
-    resetCase("等待下一位挑战者：请选择三条候选割线。");
+    resetCase(`等待下一位挑战者：${activeCase.teaching.phase1.initialMessage}`);
   }, 120000);
 }
 
@@ -102,10 +102,11 @@ function toggleHinge(id) {
 }
 
 function checkCuts() {
+  const expectedCount = activeCase.challenges.cuts.requiredCount;
   const result = validateSelection(activeCase, "cuts", state.selectedCutIds);
   if (!result.valid) {
     svgRenderer.flashWrong("cuts", result.wrongIds);
-    ui.showMessage(`三条割线中有 ${result.correctCount} 条正确。红色闪烁的是错误选择。`, "error");
+    ui.showMessage(`所选割线中有 ${result.correctCount} 条正确，共需选出 ${expectedCount} 条。红色闪烁的是错误选择。`, "error");
     return;
   }
   dispatch({ type: "CUTS_VALIDATED", valid: true });
@@ -113,14 +114,15 @@ function checkCuts() {
   svgRenderer.showCorrectCuts(activeCase.challenges.cuts.answerIds);
   svgRenderer.buildHingeCandidates(activeCase, screenPoints, toggleHinge);
   ui.byId("boardTip").innerHTML = activeCase.teaching.phase2.boardTip;
-  ui.showMessage("割线正确！现在请寻找三个铰链位置。", "success");
+  ui.showMessage(`割线正确！现在请寻找 ${activeCase.challenges.hinges.requiredCount} 个铰链位置。`, "success");
 }
 
 function checkHinges() {
+  const expectedCount = activeCase.challenges.hinges.requiredCount;
   const result = validateSelection(activeCase, "hinges", state.selectedHingeIds);
   if (!result.valid) {
     svgRenderer.flashWrong("hinges", result.wrongIds);
-    ui.showMessage(`三个候选点中，有 ${result.correctCount} 个是正确铰点。`, "error");
+    ui.showMessage(`所选候选点中，有 ${result.correctCount} 个是正确铰点，共需选出 ${expectedCount} 个。`, "error");
     return;
   }
   dispatch({ type: "HINGES_VALIDATED", valid: true });
@@ -129,7 +131,7 @@ function checkHinges() {
   svgRenderer.buildRealHinges(activeCase.motion.hingeIds);
   svgRenderer.renderGeometry(frameAt(0));
   ui.byId("boardTip").innerHTML = activeCase.teaching.phase3.boardTip;
-  ui.showMessage("三个铰点正确！现在四块已经形成连续的铰链运动链。", "success");
+  ui.showMessage(`${expectedCount} 个铰点正确！${activeCase.geometry.pieces.length} 块刚体已经形成连续的铰链运动链。`, "success");
 }
 
 function requestHint(kind) {
@@ -178,14 +180,14 @@ function animateTo(target) {
       board.classList.remove("animating");
       if (target === 1) {
         board.classList.add("final-shape");
-        button.textContent = "↶ 还原三角形";
+        button.textContent = `↶ 还原${activeCase.teaching.sourceName}`;
         ui.byId("finalMessage").classList.add("show");
         ui.byId("boardTip").innerHTML = "✓ 变形完成 · <strong>形状改变，面积不变</strong>";
         ui.showMessage("变形完成！整个动画过程中，展示区域始终保持固定。", "success");
       } else {
         button.textContent = "▶ 开始变形";
-        ui.byId("boardTip").innerHTML = "已回到三角形 · 点击 <strong>开始变形</strong> 可以再次观看";
-        ui.showMessage("机构已经沿原路径回到初始三角形。");
+        ui.byId("boardTip").innerHTML = `已回到${activeCase.teaching.sourceName} · 点击 <strong>开始变形</strong> 可以再次观看`;
+        ui.showMessage(`机构已经沿原路径回到初始${activeCase.teaching.sourceName}。`);
       }
       resetIdleTimer();
     }

@@ -1,6 +1,6 @@
 # 几何变形魔法
 
-原生 HTML、CSS、JavaScript 和 SVG 实现的铰链剖分教学软件。当前已实现经典杜德尼“等边三角形 → 正方形”案例，其他案例显示为待数学验证。
+原生 HTML、CSS、JavaScript 和 SVG 实现的铰链剖分教学软件。当前已实现经典杜德尼“等边三角形 → 正方形”和 Loyd“希腊十字形 → 正方形”两个平面摆动式案例；其他案例显示为待数学验证。
 
 ## 运行
 
@@ -26,4 +26,6 @@ npm test
 node --test
 ```
 
-测试覆盖案例结构、答案验证、几何面积、刚体不变量、铰点连续性、轨迹回归和状态隔离。
+测试覆盖案例结构、答案验证、初末覆盖、几何面积、刚体不变量、铰点连续性、无正面积重叠、运动连续性、轨迹回归和状态隔离。
+
+Loyd 案例依据 Izidor Hafner 与 Greg N. Frederickson 的 Wolfram Demonstrations 构造独立实现，来源材料采用 CC BY-NC-SA 3.0；详细来源、许可与验证记录见 `docs/new-case-feasibility.md`。

@@ -26,6 +26,8 @@ export function validateSelection(caseSpec, kind, selectedIds) {
 export function validateCaseDefinition(caseSpec) {
   const errors = [];
   const pointIds = new Set(Object.keys(caseSpec.geometry.points));
+  const pieceIds = new Set(caseSpec.geometry.pieces.map(piece => piece.id));
+  const piecePointIds = new Map(caseSpec.geometry.pieces.map(piece => [piece.id, new Set(piece.pointIds)]));
   const ensurePoint = (id, context) => {
     if (!pointIds.has(id)) errors.push(`${context} 引用了不存在的点 ${id}`);
   };
@@ -48,6 +50,15 @@ export function validateCaseDefinition(caseSpec) {
   const hingeIds = new Set(caseSpec.challenges.hinges.candidates.map(item => item.id));
   caseSpec.challenges.hinges.answerIds.forEach(id => {
     if (!hingeIds.has(id)) errors.push(`铰点答案引用了不存在的候选项 ${id}`);
+  });
+  caseSpec.challenges.hinges.chain.forEach(hinge => {
+    if (!hingeIds.has(hinge.id)) errors.push(`铰链拓扑引用了不存在的候选项 ${hinge.id}`);
+    hinge.pieces.forEach(pieceId => {
+      if (!pieceIds.has(pieceId)) errors.push(`铰链 ${hinge.id} 引用了不存在的拼块 ${pieceId}`);
+      else if (!piecePointIds.get(pieceId).has(hinge.id)) {
+        errors.push(`铰链 ${hinge.id} 不在拼块 ${pieceId} 的顶点中`);
+      }
+    });
   });
 
   const source = caseSpec.geometry.sourceOutline.map(id => caseSpec.geometry.points[id]);

@@ -29,7 +29,7 @@
       <div class="card">
         <section class="phase-panel active" id="phase1">
           <div class="question-number" id="phase1Number"></div><h2 id="phase1Title"></h2>
-          <div class="transform-preview" aria-hidden="true"><div class="mini-triangle"></div><div class="arrow">→</div><div class="mini-square"></div></div>
+          <div class="transform-preview" aria-hidden="true"><div id="previewSource" class="mini-triangle"></div><div class="arrow">→</div><div id="previewTarget" class="mini-square"></div></div>
           <div class="description" id="phase1Description"></div>
           <div class="selection-count"><span id="cutCountLabel"></span><span><span class="selection-number" id="lineCount">0</span> / <span id="cutCountTarget">3</span></span></div><br>
           <button class="main-button" id="checkLinesButton" disabled></button>
@@ -48,7 +48,7 @@
           <div class="button-row"><button class="secondary-button" id="replayButton">再看一次</button><button class="secondary-button reset-button">重新挑战</button></div>
         </section>
       </div>
-      <div class="card"><div class="message" id="message"></div></div>
+      <div class="card"><div class="message" id="message"></div><a class="case-attribution" id="caseAttribution" target="_blank" rel="noreferrer"></a></div>
     </aside>
   </main>
   <script type="module" src="./src/app.js"></script>

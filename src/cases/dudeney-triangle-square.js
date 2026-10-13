@@ -76,6 +76,9 @@ export const dudeneyTriangleSquare = {
     hingeIds: ["D", "E", "K"]
   },
   teaching: {
+    sourceName: "三角形",
+    targetName: "正方形",
+    preview: { source: "triangle", target: "square" },
     subtitle: "杜德尼三角形 → 正方形铰链剖分",
     stages: ["① 找割线", "② 找铰链", "③ 变形"],
     phase1: {

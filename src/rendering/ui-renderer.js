@@ -25,6 +25,12 @@ export class UiRenderer {
     this.byId("checkHingesButton").textContent = text.phase2.checkLabel;
     this.byId("motionInfo").innerHTML = text.phase3.motionInfo;
     this.byId("finalMessage").innerHTML = text.phase3.finalMessage;
+    this.byId("previewSource").className = `mini-${text.preview?.source ?? "triangle"}`;
+    this.byId("previewTarget").className = `mini-${text.preview?.target ?? "square"}`;
+    const attribution = this.byId("caseAttribution");
+    attribution.textContent = caseSpec.attribution?.text ?? "";
+    attribution.href = caseSpec.attribution?.url ?? "";
+    attribution.hidden = !caseSpec.attribution;
   }
 
   renderState(state, caseSpec) {

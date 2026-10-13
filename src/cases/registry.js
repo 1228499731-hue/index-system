@@ -1,7 +1,9 @@
 import { dudeneyTriangleSquare } from "./dudeney-triangle-square.js";
+import { greekCrossSquareLoyd } from "./greek-cross-square-loyd.js";
 
 export const caseRegistry = [
   dudeneyTriangleSquare,
+  greekCrossSquareLoyd,
   { id: "greek-cross-hexagon", name: "希腊十字形 → 正六边形", status: "geometry-pending", motionType: "planar-swing" },
   { id: "hexagon-square", name: "正六边形 → 正方形", status: "geometry-pending", motionType: "planar-swing" },
   { id: "hexagon-triangle", name: "正六边形 → 等边三角形", status: "geometry-pending", motionType: "flip-assisted" },
