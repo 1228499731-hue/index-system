@@ -220,7 +220,7 @@ Loyd 的正式配置位于 `src/cases/greek-cross-square-loyd.js`，研究模块
 页面确认存在公开 Source Notebook，作者为 Izidor Hafner 和 Greg N. Frederickson，许可同为 CC BY-NC-SA：
 <https://demonstrations.wolfram.com/HingedDissectionOfAnEquilateralTriangleIntoTwoHexagons/>
 
-由于第一优先级已经取得完整坐标并通过核心验证，按照任务给定的优先级条件，本轮没有继续下载和分析该 notebook 的数学模型。其状态仍为“待研究”，不能视为已验证案例。
+后续已取得页面公开的 Source Notebook 元数据与完整 `Manipulate` 源码。源码明确给出 6 个刚体多边形、5 个铰链关系所需的旋转中心、源等边三角形、两个目标正六边形以及两阶段刚体转角。独立 JavaScript 转写已通过面积、初末覆盖、刚体、铰链、连续性和无正面积碰撞测试，并已接入软件。完整记录见 `docs/triangle-two-hexagons.md`。
 
 ### B. Hinged Dissections of a Hexagram and a Hexagon
 

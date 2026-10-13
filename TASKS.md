@@ -12,10 +12,10 @@
 
 1. 希腊十字形 → 正方形（Loyd）：已完成精确坐标、面积与覆盖验证、三铰链刚体运动、案例接入及自动化测试。来源、许可和验证记录见 `docs/new-case-feasibility.md`；实现采用 Wolfram Demonstrations 页面所列 Loyd 构造的独立 JavaScript 数学模型，并保留 CC BY-NC-SA 3.0 署名。
 2. 希腊十字形 → 正六边形：研究记录见 `docs/greek-cross-hexagon.md`。已由 Frederickson Figure 6 确认 8 块、8 铰链闭环、二重旋转对称及平行四边形开孔运动；精确割点、刚体局部坐标和连续转角路径仍缺失。取得专著 Figures 11.42–11.44 及正文/尺寸资料前，保持 `geometry-pending`，不得实现正式动画。
-3. 正六边形 → 正方形：确认是否能使用纯平面摆动模型。
-4. 正六边形 → 等边三角形：先证明翻转需求，再设计正反面显示。
-5. 正五边形 → 等边三角形：完成面积比例、剖分和翻转运动验证。
-6. 等边三角形 → 两个正六边形：明确目标是两个独立轮廓还是单一铰链终态，并验证连通性。
+3. 正六边形 → 正方形：已完成 Figure 37 的 10 块根式坐标恢复、九铰链开链、wobbly 平面摆动路径、正式案例接入和自动化测试。数学说明见 `docs/hexagon-square.md`。该来源允许运动途中重叠，界面不得声称无碰撞。
+4. 正六边形 → 等边三角形：已完成 Figure 39 的 9 块数值约束重建、八铰链开链、wobbly 平面摆动路径、正式案例接入和测试。已确认该构造不需要翻转；原 `flip-assisted` 预分类已修正为 `planar-swing`。说明见 `docs/hexagon-triangle.md`。
+5. 正五边形 → 等边三角形：已确认 Wheeler 的 6 块摆动式实物模型和 Frederickson Figure 23 的翻转式构造存在，但公开资料没有足够的精确坐标、铰链局部点和可复现路径；保持 `geometry-pending`，不得从图片伪造坐标。研究记录见 `docs/pentagon-triangle.md`。
+6. 等边三角形 → 两个正六边形：已从 Wolfram Source Notebook 取得完整 6 块坐标、5 铰链树和两阶段转角，完成无碰撞平面摆动路径、正式案例接入和测试。说明见 `docs/triangle-two-hexagons.md`。
 
 每个案例必须依次完成：数学来源记录、精确坐标、面积证明、候选题设计、铰链拓扑、运动求解器、自动化测试、人工视觉验收。完成前不得将 `status` 改为 `implemented`。
 

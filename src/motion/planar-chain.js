@@ -1,6 +1,9 @@
 import { clonePoint, rotatePoint, smoothstep } from "../geometry/vector.js";
 import { toScreen } from "../geometry/transform.js";
 import { sampleGreekCrossSquare } from "../cases/research/greek-cross-square.js";
+import { sampleHexagonSquare } from "../cases/research/hexagon-square.js";
+import { sampleHexagonTriangle } from "../cases/research/hexagon-triangle.js";
+import { sampleTriangleTwoHexagons } from "../cases/research/triangle-two-hexagons.js";
 
 export function buildInitialGeometry(caseSpec, screenPoints) {
   return Object.fromEntries(
@@ -62,6 +65,45 @@ export function getPlanarFrame(caseSpec, screenPoints, progress) {
           toScreen(point, caseSpec.viewport)
         ])
       )
+    };
+  }
+  if (caseSpec.motion.solver === "hexagon-square") {
+    const frame = sampleHexagonSquare(progress);
+    return {
+      geometry: Object.fromEntries(
+        Object.entries(frame.geometry).map(([pieceId, points]) => [
+          pieceId,
+          points.map(point => toScreen(point, caseSpec.viewport))
+        ])
+      ),
+      hinges: Object.fromEntries(
+        Object.entries(frame.hinges).map(([hingeId, [point]]) => [
+          caseSpec.motion.hingeMap?.[hingeId] ?? hingeId,
+          toScreen(point, caseSpec.viewport)
+        ])
+      )
+    };
+  }
+  if (caseSpec.motion.solver === "hexagon-triangle") {
+    const frame = sampleHexagonTriangle(progress);
+    return {
+      geometry: Object.fromEntries(Object.entries(frame.geometry).map(([pieceId, points]) => [
+        pieceId, points.map(point => toScreen(point, caseSpec.viewport))
+      ])),
+      hinges: Object.fromEntries(Object.entries(frame.hinges).map(([hingeId, [point]]) => [
+        caseSpec.motion.hingeMap?.[hingeId] ?? hingeId, toScreen(point, caseSpec.viewport)
+      ]))
+    };
+  }
+  if (caseSpec.motion.solver === "triangle-two-hexagons") {
+    const frame = sampleTriangleTwoHexagons(progress);
+    return {
+      geometry: Object.fromEntries(Object.entries(frame.geometry).map(([pieceId, points]) => [
+        pieceId, points.map(point => toScreen(point, caseSpec.viewport))
+      ])),
+      hinges: Object.fromEntries(Object.entries(frame.hinges).map(([hingeId, [point]]) => [
+        caseSpec.motion.hingeMap?.[hingeId] ?? hingeId, toScreen(point, caseSpec.viewport)
+      ]))
     };
   }
   throw new Error(`未知的平面运动学求解器：${caseSpec.motion.solver}`);

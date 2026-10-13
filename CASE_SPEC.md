@@ -66,6 +66,7 @@
 - `durationMs`：单程动画时长。
 - `hingeIds`：实际显示并跟随运动的铰链。
 - `hingeMap`：可选；当求解器内部铰链 ID 与案例点 ID 不同时，显式声明 `{ 求解器ID: 案例ID }` 映射。
+- `collisionPolicy`：`collision-free` 或 `wobbly-overlap-allowed`。后者必须有可靠来源依据，并在教学文案中明确披露运动途中允许拼块穿越。
 
 翻转式案例还必须在未来版本加入面朝向、翻转事件、反射轴或三维过渡定义。在这些字段和数学证明完成前，状态必须保持 `geometry-pending`。
 
